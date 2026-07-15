@@ -1,0 +1,55 @@
+{
+  "name": "office-inventory-system-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "start:prod": "npm run build && node dist/server.js",
+    "prisma": "prisma",
+    "migrate": "prisma migrate dev --name init",
+    "generate": "prisma generate",
+    "db:prepare": "npx prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.8.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "exceljs": "^4.3.1",
+    "express": "^4.22.2",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.22.5",
+    "nodemailer": "^6.9.4",
+    "pdfkit": "^0.13.0",
+    "zod": "^3.25.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.19",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^20.14.4",
+    "prisma": "^5.8.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.2"
+  },
+  "description": "This repository contains the backend for the Office Computer System Inventory application.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CSVS2005/office_inventory_system_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CSVS2005/office_inventory_system_backend/issues"
+  },
+  "homepage": "https://github.com/CSVS2005/office_inventory_system_backend#readme"
+}

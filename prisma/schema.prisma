@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int                  @id @default(autoincrement())
+  full_name     String
+  surname       String
+  first_name    String
+  username      String               @unique
+  email         String               @unique
+  password_hash String
+  role_name     RoleName
+  status        UserStatus           @default(active)
+  created_by    Int?                 
+  owner_id      Int
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  personnel             Personnel?           @relation("PersonnelUser")
+  ownedInventories      Inventory[]          @relation("InventoryOwner")
+  inventoriedInventories Inventory[]         @relation("InventoryInventoriedBy")
+  createdPersonnel      Personnel[]          @relation("PersonnelCreatedBy")
+  activityLogs          ActivityLog[]        @relation("ActivityOwner")
+  resetCodes            PasswordResetCode[]
+  createdBy             User?                @relation("UserCreatedBy", fields: [created_by], references: [id])
+  createdUsers          User[]               @relation("UserCreatedBy")
+
+  @@index([owner_id])
+}
+
+enum RoleName {
+  admin
+  staff
+  personnel
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+model Personnel {
+  id          Int        @id @default(autoincrement())
+  surname     String
+  first_name  String
+  designation String
+  created_by  Int
+  user_id     Int?       @unique
+  owner_id    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        User?      @relation("PersonnelUser", fields: [user_id], references: [id])
+  createdBy   User       @relation("PersonnelCreatedBy", fields: [created_by], references: [id])
+  inventory   Inventory[]
+
+  @@index([owner_id])
+}
+
+model Inventory {
+  id              Int         @id @default(autoincrement())
+  personnel_id    Int
+  owner_id        Int
+  brand_model     String
+  property_number String?
+  serial_number   String
+  status          String
+  processor       String?
+  ram             String?
+  hard_drive      String?
+  graphics_card   String?
+  network         String?
+  optical_drive   String?
+  display_device  String?
+  avr_ups         String?
+  printer         String?
+  keyboard_mouse  String?
+  operating_system String?
+  installed_software String?
+  inventory_date  DateTime
+  remarks         String?
+  inventoried_by  Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  personnel       Personnel   @relation(fields: [personnel_id], references: [id])
+  owner          User        @relation("InventoryOwner", fields: [owner_id], references: [id])
+  inventoriedBy  User        @relation("InventoryInventoriedBy", fields: [inventoried_by], references: [id])
+
+  @@index([owner_id])
+  @@index([personnel_id])
+}
+
+model ActivityLog {
+  id         Int      @id @default(autoincrement())
+  owner_id   Int
+  full_name  String
+  action     String
+  details    String?
+  createdAt  DateTime @default(now())
+  owner      User     @relation("ActivityOwner", fields: [owner_id], references: [id])
+
+  @@index([owner_id])
+}
+
+model PasswordResetCode {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  email      String
+  code       String
+  expires_at DateTime
+  used       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([email])
+}
